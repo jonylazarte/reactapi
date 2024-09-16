@@ -63,7 +63,7 @@ app.get('/tasks', (req, res)=>{
      if(tasksFound){res.status(200).send(tasksFound)} else {res.status(404).send("Tareas no encontradas")}
      	}
 })
-app.post('/tasks', (req, res) =>{
+/*app.post('/tasks', (req, res) =>{
 	var inputData = req.body
 
 	fs.readFile('tasks.json', 'utf-8', (err, data)=>{
@@ -90,6 +90,22 @@ app.post('/tasks', (req, res) =>{
 	     })
 	})
 	
+})*/
+app.post('/tasks' ,(req,res) =>{
+	var inputData = req.body
+	var handledTasks = tasks
+
+	for(let i = 0; i <= handledTasks.length; i++){
+            let isUsed = handledTasks.findIndex(data => data.taskID == i)
+            if(isUsed === -1) { inputData = {...inputData, taskID: i  }; break; }
+	     };  handledTasks.push(inputData);
+
+     fs.writeFile('tasks.json', JSON.stringify(handledTasks), (err)=>{
+		       if(err){console.log(err)}else{
+		       	console.log("Datos sobreescritos correctamente")
+     	          res.status(201).json(handledTasks)
+		       }
+	     })
 })
 app.get('/userTasks', (req, res)=>{
 	userID = req.headers.autorization
